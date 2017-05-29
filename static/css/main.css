@@ -1,0 +1,446 @@
+
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+
+.sms-color {
+	color: #e87810;
+}
+
+.viber-color {
+	color: #6639B6;
+}
+
+.btn-ldeep-purple {
+	width: 220px;
+}
+
+nav {
+	background: #6639B6!important;
+}
+
+.navbar-default .navbar-brand {
+    color: #ffffff!important;
+	font-family: 'Varela Round', sans-serif;
+	font-weight: 800;
+	font-size: 26px;
+}
+
+.navbar-default .navbar-toggle {
+    border-color: transparent!important;
+}
+
+.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
+	background-color: #e2d4e7;
+}
+
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #ffffff;
+}
+
+.navbar-nav>.active>a {
+	background-image: linear-gradient(to bottom,#e2d4e7 0,#e2d4e7 100%)!important;
+}
+
+.navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus {
+	color: #ffffff;
+}
+
+.navbar-default .navbar-nav>li>a {
+	color: #ffffff;
+}
+
+.navbar-default .navbar-nav>li>a, .navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus {
+	color: #ffffff;
+}
+
+.options {
+	margin: 20px 0;
+}
+
+
+.viber-block, .sms-block {
+	padding: 15px 0;
+}
+
+
+.viber-media-param {
+	display: none;
+}
+
+.nums {
+	float: none!important; 
+    padding-right: 15px!important;
+    padding-left: 15px!important;
+}
+
+footer {
+	text-align: center;
+}
+
+/* ==============================================================================
+	Login page style
+   ============================================================================== */
+
+#loader-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+}
+#loader {
+    display: block;
+    position: relative;
+    left: 50%;
+    top: 50%;
+    width: 150px;
+    height: 150px;
+    margin: -75px 0 0 -75px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: #8f5db7;
+
+    -webkit-animation: spin 2s linear infinite; /* Chrome, Opera 15+, Safari 5+ */
+    animation: spin 2s linear infinite; /* Chrome, Firefox 16+, IE 10+, Opera */
+
+    z-index: 1001;
+}
+
+    #loader:before {
+        content: "";
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        right: 5px;
+        bottom: 5px;
+        border-radius: 50%;
+        border: 3px solid transparent;
+        border-top-color: #59267c;
+
+        -webkit-animation: spin 3s linear infinite; /* Chrome, Opera 15+, Safari 5+ */
+        animation: spin 3s linear infinite; /* Chrome, Firefox 16+, IE 10+, Opera */
+    }
+
+    #loader:after {
+        content: "";
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        right: 15px;
+        bottom: 15px;
+        border-radius: 50%;
+        border: 3px solid transparent;
+        border-top-color: #e2d4e7;
+
+        -webkit-animation: spin 1.5s linear infinite; /* Chrome, Opera 15+, Safari 5+ */
+          animation: spin 1.5s linear infinite; /* Chrome, Firefox 16+, IE 10+, Opera */
+    }
+
+    @-webkit-keyframes spin {
+        0%   {
+            -webkit-transform: rotate(0deg);  /* Chrome, Opera 15+, Safari 3.1+ */
+            -ms-transform: rotate(0deg);  /* IE 9 */
+            transform: rotate(0deg);  /* Firefox 16+, IE 10+, Opera */
+        }
+        100% {
+            -webkit-transform: rotate(360deg);  /* Chrome, Opera 15+, Safari 3.1+ */
+            -ms-transform: rotate(360deg);  /* IE 9 */
+            transform: rotate(360deg);  /* Firefox 16+, IE 10+, Opera */
+        }
+    }
+    @keyframes spin {
+        0%   {
+            -webkit-transform: rotate(0deg);  /* Chrome, Opera 15+, Safari 3.1+ */
+            -ms-transform: rotate(0deg);  /* IE 9 */
+            transform: rotate(0deg);  /* Firefox 16+, IE 10+, Opera */
+        }
+        100% {
+            -webkit-transform: rotate(360deg);  /* Chrome, Opera 15+, Safari 3.1+ */
+            -ms-transform: rotate(360deg);  /* IE 9 */
+            transform: rotate(360deg);  /* Firefox 16+, IE 10+, Opera */
+        }
+    }
+
+    #loader-wrapper .loader-section {
+        position: fixed;
+        top: 0;
+        width: 51%;
+        height: 100%;
+        background: #222222;
+        z-index: 1000;
+        -webkit-transform: translateX(0);  /* Chrome, Opera 15+, Safari 3.1+ */
+        -ms-transform: translateX(0);  /* IE 9 */
+        transform: translateX(0);  /* Firefox 16+, IE 10+, Opera */
+    }
+
+    #loader-wrapper .loader-section.section-left {
+        left: 0;
+    }
+
+    #loader-wrapper .loader-section.section-right {
+        right: 0;
+    }
+
+    /* Loaded */
+    .loaded #loader-wrapper .loader-section.section-left {
+        -webkit-transform: translateX(-100%);  /* Chrome, Opera 15+, Safari 3.1+ */
+            -ms-transform: translateX(-100%);  /* IE 9 */
+                transform: translateX(-100%);  /* Firefox 16+, IE 10+, Opera */
+
+        -webkit-transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+                transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+    }
+
+    .loaded #loader-wrapper .loader-section.section-right {
+        -webkit-transform: translateX(100%);  /* Chrome, Opera 15+, Safari 3.1+ */
+            -ms-transform: translateX(100%);  /* IE 9 */
+                transform: translateX(100%);  /* Firefox 16+, IE 10+, Opera */
+
+-webkit-transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+        transition: all 0.7s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+    }
+
+    .loaded #loader {
+        opacity: 0;
+        -webkit-transition: all 0.3s ease-out;
+                transition: all 0.3s ease-out;
+    }
+    .loaded #loader-wrapper {
+        visibility: hidden;
+
+        -webkit-transform: translateY(-100%);  /* Chrome, Opera 15+, Safari 3.1+ */
+            -ms-transform: translateY(-100%);  /* IE 9 */
+                transform: translateY(-100%);  /* Firefox 16+, IE 10+, Opera */
+
+        -webkit-transition: all 0.3s 1s ease-out;
+                transition: all 0.3s 1s ease-out;
+    }
+
+    /* JavaScript Turned Off */
+    .no-js #loader-wrapper {
+        display: none;
+    }
+    .no-js h1 {
+        color: #222222;
+    }
+
+    #content {
+        margin: 0 auto;
+        padding-bottom: 50px;
+        width: 80%;
+        max-width: 978px;
+    }
+
+
+    /* ===========================================================
+     =========================Showall============================*/
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 0!important;
+    margin-left: 0!important;
+    border: none!important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    border: none!important;
+}
+
+.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+    background-color: #6639B6;
+    border-color: #6639B6;
+}
+
+.pagination>li>a, .pagination>li>span {
+    color: #6639B6;
+}
+
+.pagination>li>a:hover, .pagination>li>span:hover {
+    color: #6639B6;
+}
+
+thead, th, td {text-align: center;}
+
+.inline-block {
+    display: inline-block;
+}
+
+.detail-pointer {
+    cursor: pointer;
+}
+
+.viber-btn-detail {
+    text-align:center;
+    background-color: #6639B6;
+    border: 1px solid #6639B6;
+    border-top-left-radius: 0px!important;
+    border-top-right-radius: 0px!important;
+}
+
+#viber-details .list-group .list-group-item:first-child {
+    border-top-left-radius: 0px!important;
+    border-top-right-radius: 0px!important;
+}
+
+.viber-btn-detail span {
+    color: white;
+}
+
+.viber-btn-detail:focus, .viber-btn-detail:hover {
+    background-color: #8f5db7!important;
+}
+
+
+.sms-btn-detail {
+    text-align:center;
+    background-color: #e87810;
+    border: 1px solid #e87810;
+    border-top-left-radius: 0px!important;
+    border-top-right-radius: 0px!important;
+}
+
+#sms-details .list-group .list-group-item:first-child {
+    border-top-left-radius: 0px!important;
+    border-top-right-radius: 0px!important;
+}
+
+.sms-btn-detail span {
+    color: white;
+}
+
+.sms-btn-detail:focus, .sms-btn-detail:hover {
+    background-color: #e8a610!important;
+}
+
+#chart1_div > div > div {
+    margin: 0px auto;
+}
+
+#chart2_div > div > div {
+    margin: 0px auto;
+}
+
+.btn-purple.focus, .btn-purple:focus, .btn-purple:hover, .btn-orange.focus, .btn-orange:focus, .btn-orange:hover {
+    color: #ffffff;
+}
+
+/*********************************Texarea mask**********************************/
+
+* {
+  box-sizing: border-box;
+  }
+#textareamenu_content ul, #textareamenu-viber, #textareamenu-sms {
+  display: none;
+  }
+#textarea_container {
+  position: relative;
+  *display: inline-block;
+  }
+#textarea_container label[for=textareamenu-viber] {
+    background: #6639B6;
+    color: white;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: .2em;
+    *font-size: 18px;
+    cursor: pointer;
+    border-radius: 3px 3px 3px 3px;
+}
+
+#textarea_container label[for=textareamenu-sms] {
+    background: #e87810;
+    color: white;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: .2em;
+    *font-size: 18px;
+    cursor: pointer;
+    border-radius: 3px 3px 3px 3px;
+  }
+
+#textareamenu-viber:checked ~ #textareamenu_content, #textareamenu-sms:checked ~ #textareamenu_content {
+    position: absolute;
+    top: 0;
+    right: -161px;
+    min-width: 13em;
+    z-index: 99;
+  }
+
+#textareamenu-viber:checked ~ #textareamenu_content {
+    background: #6639B6;
+    color: #3d5869;
+}
+
+#textareamenu-sms:checked ~ #textareamenu_content {
+    background: #e87810;
+    color: #3d5869;
+}
+
+#textareamenu-viber:checked ~ #textareamenu_content ul, #textareamenu-sms:checked ~ #textareamenu_content ul  {
+    display: block;
+    list-style: none;
+    margin: 5px 5px 5px 21px;
+    height: 186px;
+    overflow: auto;
+    background: #fff;
+
+    padding: 0 5px 5px 5px;
+    border-radius: 3px;
+  }
+
+textarea {
+    min-height: 14em;
+    *min-width: 32.5em;
+}
+#textareamenu-viber:checked ~ label, #textareamenu-sms:checked ~ label  {
+    position: absolute;
+    right: 0em;
+    top: 0;
+    z-index: 100;
+  }
+
+.placeholder-list-header {
+    overflow: hidden;
+    padding-left: 7px;
+    padding-right: 7px;
+}
+
+.placeholder-list-item {
+    cursor: pointer;
+}
+
+.choose_params_viber > .placeholder-list-item:hover {
+    background: #6639B6;
+    color: #ffffff;
+}
+
+.choose_params_sms > .placeholder-list-item:hover {
+    background: #e87810;
+    color: #ffffff;
+}
+
+.inner {
+    position: absolute;
+    padding: 6px 12px;
+}
+
+.inner > span {
+    display: inline-block;
+    padding: 0px 3px;
+    background: #6639B6;
+    color: #fff;
+    margin: 0px 3px 1px 3px;
+}
+
+.btn-prev:focus, .btn-prev:hover {
+    color: transparent!important;
+    text-decoration: none!important;
+}
+
+.prev {
+    margin: 40px;
+}

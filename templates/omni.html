@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>OMNI Bulks list</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="{{ static_url('css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ static_url('css/bootstrap-datetimepicker.css') }}">
+        <link rel="stylesheet" href="{{ static_url('css/buttons.css') }}">
+        <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet">
+        <link rel="stylesheet" href="http://fontawesome.io/assets/font-awesome/css/font-awesome.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css">
+        <style>
+            body {
+                padding-top: 50px;
+                padding-bottom: 20px;
+            }
+        </style>
+        <link rel="stylesheet" href="{{ static_url('css/bootstrap-theme.min.css') }}">
+        <link rel="stylesheet" href="{{ static_url('css/main.css') }}">
+
+        <script src="{{ static_url('js/vendor/modernizr-2.8.3-respond-1.4.2.min.js') }}"></script>
+        <!--Load the AJAX API-->
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <script type="text/javascript">
+
+          // Load the Visualization API and the corechart package.
+          google.charts.load('current', {'packages':['corechart']});
+
+          google.charts.setOnLoadCallback(drawChart1);
+          google.charts.setOnLoadCallback(drawChart2);
+
+          function drawChart1() {
+
+            // Create the data table.
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Topping');
+            data.addColumn('number', 'Slices');
+            data.addRows([
+              ['Доставлено', {{ chart1[0] }} ],
+              ['В процессе', {{ chart1[1] }} ],
+              ['Не доставлено', {{ chart1[2] }} ],
+            ]);
+
+            // Set chart options
+            var options = {
+                            'title':'Статистика отправленных сообщений',
+                            'width':400,
+                            'height':250,
+                            'is3D': true,
+                            slices: {
+                                0: { color: '#449d44' },
+                                1: { color: '#e87810' },
+                                2: { color: 'red' }
+                            }
+                        };
+
+            // Instantiate and draw our chart, passing in some options.
+            var chart = new google.visualization.PieChart(document.getElementById('chart1_div'));
+            chart.draw(data, options);
+          }
+
+          function drawChart2() {
+
+        // Create the data table for Anthony's pizza.
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Topping');
+        data.addColumn('number', 'Slices');
+        data.addRows([
+          ['VIBER', {{ chart2[0] }} ],
+          ['SMS', {{ chart2[1] }} ],
+        ]);
+
+        // Set options for Anthony's pie chart.
+        var options = {
+                        title:'Канал доставленных сообщений',
+                        width:400,
+                        height:250,
+                        'is3D': true,
+                        slices: {
+                                0: { color: '#6639B6' },
+                                1: { color: '#e87810' }
+                            }
+                    };
+
+        // Instantiate and draw the chart for Anthony's pizza.
+        var chart = new google.visualization.PieChart(document.getElementById('chart2_div'));
+        chart.draw(data, options);
+      }
+        </script>
+</head>
+<body>
+    <div id="loader-wrapper">
+        <div id="loader"></div>
+        <div class="loader-section section-left"></div>
+        <div class="loader-section section-right"></div>
+    </div>
+
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Viber Sender</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="nav navbar-nav navbar-right">
+                <!--<li><a href="#"><i class="fa fa-download"></i> Скачать статистику</a></li>-->
+                <li><a href="/create"><i class="fa fa-plus"></i> Создать рассылку</a></li>
+                <li><a href="/"><i class="fa fa-envelope-open-o" aria-hidden="true"></i> Мои рассылки</a></li>
+                <li><a href="/logout"><i class="fa fa-power-off" aria-hidden="true"></i> Выйти</a></li>
+            </ul>
+        </div>
+
+      </div>
+    </nav>
+
+    <div class="container">
+        <div class="row" style="margin: 20px 0;">
+            <h3>Статистика по рассылке:</h3>
+                <div class="col-md-6">
+                    <ul class="list-group">
+                        {% for key, value in bulkinfo.items() %}
+                        <li class="list-group-item"><span>{{ key }}</span>: <span style="float:right;">{{ value }}</span></li>
+                        {% end %}
+                    </ul>
+
+                    <ul class="list-group detail-pointer">
+                        <a class="list-group-item viber-btn-detail" data-toggle="collapse" data-target="#viber-details"><span>Viber сообщение</span></a>
+                        <div id="viber-details" class="collapse">
+                            <ul class="list-group">
+                                <li class="list-group-item">Альфаимя: <span style="float:right;">{{ viber_info[0] }}</span></li>
+                                <li class="list-group-item">Время валидности / час.: <span style="float:right;">{{ int(viber_info[4]/3600) }}</span></li>
+                                <li class="list-group-item" style="text-align:center;">
+                                    {% if viber_info[3] == 'Без картинки' %}
+                                        Без картинки
+                                    {% else %}
+                                        <a class="inline-block" href="{{ viber_info[3] }}" target="_blank"><img width="100px" src="{{ viber_info[2] }}" alt=""></a>
+                                    {% end %}
+                                </li>
+                                <li class="list-group-item">
+                                    <span>Текст сообщения:</span>
+                                    <br><br>
+                                    <blockquote>{{ viber_info[1] }}</blockquote>
+                                </li>
+                            </ul>
+                        </div>
+                    </ul>
+
+                    <ul class="list-group detail-pointer">
+                        <a class="list-group-item sms-btn-detail" data-toggle="collapse" data-target="#sms-details"><span>SMS сообщение</span></a>
+                        <div id="sms-details" class="collapse">
+                            <ul class="list-group">
+                                <li class="list-group-item">Альфаимя:
+                                    <span style="float:right;">{{ sms_info[0] }}</span>
+                                </li>
+                                <li class="list-group-item">Время валидности / час.:
+                                    <span style="float:right;">{{ int(sms_info[2]/3600) }}</span>
+                                </li>
+                                <li class="list-group-item">Текст сообщения:
+                                    <span>Текст сообщения:</span>
+                                    <br><br>
+                                    <blockquote>{{ sms_info[1] }}</blockquote>
+                                </li>
+                            </ul>
+                        </div>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <div id="chart1_div"></div>
+                    <div id="chart2_div"></div>
+                </div>
+        </div>
+        <div class="row">
+           <h4>Состояние отправки сообщений:</h4>
+           <div class="progress">
+              <div class="progress-bar progress-bar-success" role="progressbar"
+              aria-valuenow="{{ progress[1] }}" aria-valuemin="0" aria-valuemax="{{ progress[0] }}" style="width:{{ (progress[1]*100)/progress[0] }}%">
+                {{ int((progress[1]*100)/progress[0]) }}%
+              </div>
+            </div>
+        </div>
+        <div class="row prev">
+            <a class="btn-prev" href="{{ btn_prev }}">
+                <button type="submit" class="btn btn-ldeep-purple center-block">&laquo; НАЗАД</button>
+            </a>
+
+        </div>
+
+        <hr>
+
+        <footer>
+            <p>&copy; StartMobile 2017</p>
+        </footer>
+    </div>
+    <script src="{{ static_url('js/vendor/jquery-1.11.2.js') }}"></script>
+    <script src="{{ static_url('js/vendor/moment.js') }}"></script>
+    <script src="{{ static_url('js/vendor/bootstrap.min.js') }}"></script>
+    <script src="{{ static_url('js/vendor/bootstrap-datetime.js') }}"></script>
+    <script type="text/javascript" src="{{ static_url('js/vendor/bootstrap-filestyle.min.js') }}"> </script>
+    <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
+    <script src="{{ static_url('js/datatable.js') }}"></script>
+</body>

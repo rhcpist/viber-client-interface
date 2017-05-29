@@ -1,0 +1,290 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="{{ static_url('css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ static_url('css/bootstrap-datetimepicker.css') }}">
+        <link rel="stylesheet" href="{{ static_url('css/buttons.css') }}">
+        <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet">
+        <link rel="stylesheet" href="http://fontawesome.io/assets/font-awesome/css/font-awesome.css">
+        <style>
+            body {
+                padding-top: 50px;
+                padding-bottom: 20px;
+            }
+        </style>
+        <link rel="stylesheet" href="{{ static_url('css/bootstrap-theme.min.css') }}">
+        <link rel="stylesheet" href="{{ static_url('css/main.css') }}">
+
+        <script src="{{ static_url('js/vendor/modernizr-2.8.3-respond-1.4.2.min.js') }}"></script>
+    </head>
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+    <div id="loader-wrapper">
+        <div id="loader"></div>
+        <div class="loader-section section-left"></div>
+        <div class="loader-section section-right"></div>
+    </div>
+
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Viber Sender</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/"><i class="fa fa-envelope-open-o" aria-hidden="true"></i> Мои рассылки</a></li>
+                <li><a href="/logout"><i class="fa fa-power-off" aria-hidden="true"></i> Выйти</a></li>
+            </ul>
+        </div>
+
+      </div>
+    </nav>
+
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row options">
+        <form class="form-horizontal" onsubmit="checkCountPlaceholders(event);" method="post" action="/save" enctype=multipart/form-data>
+          <div class="start-option">
+            <h3 class="text-center">Создание рассылки</h3>
+
+            <!-- Text input-->
+            <div class="form-group">
+              <label class="col-md-4 control-label" for="textinput">Название расссылки:</label>  
+              <div class="col-md-5">
+              <input id="textinput" name="name-bulk" type="text" placeholder="" class="form-control input-md markup" required>
+              <span class="help-block">Введите название рассылки</span>  
+              </div>
+            </div>
+
+            <!-- File Button --> 
+            <div class="form-group">
+              <label class="col-md-4 control-label" for="viber_num_list">Загрузить список номеров:</label>
+              <!--<div class="col-md-4">
+                <input id="viber_num_list" name="viber_num_list" class="input-file" type="file">
+              </div>-->
+              <div class="col-md-5">
+               <input type="file" class="filestyle markup" name="list" id="fileinput" data-placeholder="Файл не выбран" data-iconName="glyphicon glyphicon-list-alt" data-buttonText="Выбрать" required>
+               <span class="help-block">Выберите файл формата .csv или .txt</span> 
+              </div> 
+            </div>
+          </div>
+
+           <!-- Time bulks send -->
+            <div class="form-group">
+              <div class="col-md-4"></div>
+              <div class="col-md-5">
+                  <div class="date input-group" id="datetimepicker">
+                    <input id="textinput" name="send_time" type="text" placeholder="" class="form-control input-md markup" required>
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                  </div>
+                  <span class="help-block">Введите время запуска рассылки</span>
+              </div>
+            </div>
+
+
+          <!-- Form Name -->
+          <div class="viber-block">
+          <hr>
+            <h3 class="text-center">Viber</h3>
+            <!-- Text input-->
+            <div class="form-group">
+              <label class="col-md-4 control-label" for="textinput">Viber альфаимя:</label>
+              <div class="col-md-5">
+                <input id="textinput" name="viber-alpha" type="text" placeholder class="form-control input-md markup" required>
+                <span class="help-block">Введите альфаимя Viber</span>
+              </div>
+            </div>
+
+            <!-- Textarea -->
+            <div class="form-group">
+              <label class="col-md-4 control-label" for="textarea">Текст сообщения:</label>
+              <div class="col-md-5">
+                <div id="textarea_container">
+                    <div class="inner"></div>
+                    <textarea required class="form-control markup" id="viber-message" name="viber-message" maxlength="999" onkeyup="count_viber($('#viber-message')[0]);"></textarea>
+                    <input type="checkbox" id="textareamenu-viber">
+                    <label for="textareamenu-viber">{ }</label>
+                    <div id="textareamenu_content">
+                        <ul class="choose_params_viber">
+                            <li class="placeholder-list-header"><h6>Переменные:</h6></li>
+                        </ul>
+                    </div>
+                </div>
+                <span class="help-block" id="viber-help-block">Символов осталось: 999</span>
+              </div>
+            </div>
+
+            <!--  Viber Validity Time -->
+            <div class="form-group">
+              <div class="col-md-4"></div>
+              <div class="col-md-5">
+                  <div class="date input-group">
+                    <input id="viber_validity_time" name="viber_validity_time" type="number" min="1" max="24" class="form-control input-md markup" value="24" required>
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-time viber-color"></span>
+                    </span>
+                  </div>
+                  <span class="help-block">Введите время валидности доставки сообщений, от 1 до 24 часов</span>
+              </div>
+            </div>
+
+            <!-- Multiple Checkboxes -->
+            <div class="form-group">
+              <label class="col-md-4 control-label" for="checkboxes">Дополнительные параметры:</label>
+              <div class="col-md-4">
+              <div class="checkbox">
+                <label for="checkboxes-0">
+                  <input type="checkbox" name="checkbox-media-params" id="viber-checkbox-params" value="1">
+                    Добавить картинку, кнопку с ссылкой для перехода
+                </label>
+              </div>
+              </div>
+            </div>
+
+            <div class="viber-media-param">
+              <!-- Text input-->
+              <div class="form-group">
+                <label class="col-md-4 control-label" for="textinput">Ссылка на фото:</label>
+                <div class="col-md-5">
+                <input id="textinput" name="viber-photo" type="text" placeholder="http://www.mysite.com/image.png" class="form-control input-md" required>
+                <span class="help-block">Добавьте ссылку на фото</span>
+                </div>
+              </div>
+
+              <!-- Text input-->
+              <div class="form-group">
+                <label class="col-md-4 control-label" for="textinput">Текст кнопки:</label>
+                <div class="col-md-4">
+                <input id="textinput" name="viber-button-text" type="text" placeholder="Перейти" class="form-control input-md" required>
+                <span class="help-block">Добавить текст для кнопки</span>
+                </div>
+              </div>
+
+              <!-- Text input-->
+              <div class="form-group">
+                <label class="col-md-4 control-label" for="textinput">Ссылка на сайт:</label>
+                <div class="col-md-4">
+                <input id="textinput" name="viber-button-ancour" type="text" placeholder="http://www.mysite.com/" class="form-control input-md" required>
+                <span class="help-block">Добавьте ссылку для перехода на сайт</span>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="sms-block">
+          <hr>
+            <h3 class="text-center">SMS</h3>
+
+            <!-- Text input-->
+            <div class="form-group">
+              <label class="col-md-4 control-label" for="textinput">SMS альфаимя:</label>
+              <div class="col-md-5">
+                <input id="textinput" name="sms-alpha" type="text" placeholder="" class="form-control input-md markup" required>
+                <span class="help-block">Введите альфаимя SMS</span>
+              </div>
+            </div>
+
+            <!-- Textarea -->
+          <div class="form-group">
+              <label class="col-md-4 control-label" for="textarea">Текст сообщения:</label>
+              <div class="col-md-5">
+                <div id="textarea_container">
+                    <div class="inner"></div>
+                    <textarea required class="form-control markup" name="sms-message" id="sms-message" name="sms-message" onkeyup="count_sms($('#sms-message')[0]);" required></textarea>
+                    <input type="checkbox" id="textareamenu-sms">
+                    <label for="textareamenu-sms">{ }</label>
+                    <div id="textareamenu_content">
+                        <ul class="choose_params_sms">
+                            <li class="placeholder-list-header"><h6>Переменные:</h6></li>
+                        </ul>
+                    </div>
+                    <span class="help-block pull-left" id="count_message">Количество частей в SMS: 1</span>
+                    <span class="help-block pull-right" id="count_symbols">Количество символов: 0</span>
+                </div>
+            </div>
+          </div>
+
+            <!--  SMS Validity Time -->
+            <div class="form-group">
+              <div class="col-md-4"></div>
+              <div class="col-md-5">
+                  <div class="date input-group">
+                    <input id="sms_validity_time" name="sms_validity_time" type="number" min="1" max="48" class="form-control input-md markup" value="48" required>
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-time sms-color"></span>
+                    </span>
+                  </div>
+                  <span class="help-block">Введите время валидности доставки сообщений, от 1 до 48 часов</span>
+              </div>
+            </div>
+
+            <!--<button type="button" class="btn btn-orange center-block" data-toggle="modal" data-target="#smsModal">Посмотреть текст VIber</button>
+
+            <div class="modal fade" id="smsModal" role="dialog">
+                <div class="modal-dialog">
+
+
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                      <h4 class="modal-title">Текст сообщения SMS</h4>
+                    </div>
+                    <div class="modal-body">
+                      <p>Some text in the modal.</p>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+            </div>-->
+
+            <hr>
+
+          </div>
+          <div class="row" style="margin:20px 0;">
+            <button id="btn-submit" type="submit" class="btn btn-ldeep-purple btn-lg center-block" onclick="validate();">Отправить</button>
+          </div> 
+        </form>
+
+        
+      </div>
+
+      <hr>
+
+      <footer>
+        <p>&copy; StartMobile 2017</p>
+      </footer>
+    </div> <!-- /container -->
+        <script src="{{ static_url('js/vendor/jquery-1.11.2.js') }}"></script>
+        <script src="{{ static_url('js/vendor/moment.js') }}"></script>
+        <script src="{{ static_url('js/vendor/bootstrap.min.js') }}"></script>
+        <script src="{{ static_url('js/vendor/bootstrap-datetime.js') }}"></script>
+        <script type="text/javascript" src="{{ static_url('js/vendor/bootstrap-filestyle.min.js') }}"> </script>
+        <script src="{{ static_url('js/main.js') }}"></script>
+        <script src="{{ static_url('js/textarea.js') }}"></script>
+    </body>
+</html>

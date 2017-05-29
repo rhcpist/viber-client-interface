@@ -1,0 +1,115 @@
+{% import time %}
+{% import datetime %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>OMNI Bulks list</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="{{ static_url('css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ static_url('css/bootstrap-datetimepicker.css') }}">
+        <link rel="stylesheet" href="{{ static_url('css/buttons.css') }}">
+        <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet">
+        <link rel="stylesheet" href="http://fontawesome.io/assets/font-awesome/css/font-awesome.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css">
+        <style>
+            body {
+                padding-top: 50px;
+                padding-bottom: 20px;
+            }
+        </style>
+        <link rel="stylesheet" href="{{ static_url('css/bootstrap-theme.min.css') }}">
+        <link rel="stylesheet" href="{{ static_url('css/main.css') }}">
+
+        <script src="{{ static_url('js/vendor/modernizr-2.8.3-respond-1.4.2.min.js') }}"></script>
+</head>
+<body>
+    <div id="loader-wrapper">
+        <div id="loader"></div>
+        <div class="loader-section section-left"></div>
+        <div class="loader-section section-right"></div>
+    </div>
+
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Viber Sender</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/create"><i class="fa fa-plus"></i> Создать рассылку</a></li>
+                <li><a href="/"><i class="fa fa-envelope-open-o" aria-hidden="true"></i> Мои рассылки</a></li>
+                <li><a href="/logout"><i class="fa fa-power-off" aria-hidden="true"></i> Выйти</a></li>
+            </ul>
+        </div>
+
+      </div>
+    </nav>
+
+    <div class="container">
+        <div class="row" style="margin: 20px 0;">
+            <table id="datatable" class="display">
+                    <thead>
+                        <tr>
+                            <th>Название рассылки</th>
+                            <th>Время старта</th>
+                            <th>Колличество сообщений</th>
+                            <th>Статус</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for list in mess %}
+                            <tr>
+                                {% for value in list %}
+                                <td>
+                                    {% if value=="wait" %}
+                                        <i class="fa fa-hourglass-start" title="Ожидает отправки"></i>
+                                    {% elif value=="now" %}
+                                        <i class="fa fa-spinner fa-pulse fa-fw" title="В процессе отправки"></i>
+                                    {% elif value=="complete" %}
+                                        <i class="fa fa-check" title="Отправка завершена"></i>
+                                    {% else %}
+                                        {% if list[0] == value %}
+                                            <a href="{{ 'omni?name=' + url_escape(value) +'&time='+ url_escape(str(int(time.mktime(datetime.datetime.strptime(list[1], "%Y-%m-%d %H:%M:%S").timetuple() )))) }}">
+                                        {% end %}
+                                        {{ value }}
+                                        {% if list[0] == value %}
+                                            </a>
+                                        {% end %}
+                                    {% end %}
+                                </td>
+                                {% end %}
+                            </tr>
+                    {% end %}
+                    </tbody>
+            </table>
+        </div>
+
+      <hr>
+
+      <footer>
+        <p>&copy; StartMobile 2017</p>
+      </footer>
+    </div>
+
+    <script src="{{ static_url('js/vendor/jquery-1.11.2.js') }}"></script>
+    <script src="{{ static_url('js/vendor/moment.js') }}"></script>
+    <script src="{{ static_url('js/vendor/bootstrap.min.js') }}"></script>
+    <script src="{{ static_url('js/vendor/bootstrap-datetime.js') }}"></script>
+    <script type="text/javascript" src="{{ static_url('js/vendor/bootstrap-filestyle.min.js') }}"> </script>
+    <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
+    <script src="{{ static_url('js/datatable.js') }}"></script>
+</body>
+</html>
