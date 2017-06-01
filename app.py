@@ -9,7 +9,7 @@ import re
 from modules.db import MomokoDB
 from modules.message import Message, MessageStatus
 from modules.viber_sender import ViberSender
-from tornado import web, ioloop, gen
+from tornado import web, ioloop, gen, escape
 
 __UPLOADS__ = "uploads/"
 __BULKS_WAIT__ = "bulks/wait/"
@@ -18,7 +18,7 @@ logging.basicConfig(format = u'%(levelname)-8s [%(asctime)s] %(message)s', level
 
 db = MomokoDB()
 
-sender = ViberSender( "login" , "pass" , db )
+sender = ViberSender( "startmobile" , "A017Bk" , db )
 
 @gen.engine
 def sender_reports():
@@ -56,7 +56,6 @@ def sender_message():
 
 class Saver(web.RequestHandler):
     def post(self, *args, **kwargs):
-
         time_start = time.time()
         self.preperedData(
              json_data=self.get_argument('json_data'),
@@ -80,11 +79,12 @@ class Saver(web.RequestHandler):
     def preperedData(self, json_data, bulk_name, viber_alpha, viber_message, viber_validity_time, viber_photo, viber_btn_text, viber_btn_ancour, sms_alpha, sms_message, sms_validity_time, send_time, user):
 
         messeges = []
+        start = time.time()
+        print('Start reating array data to POST' )
         for item in json.loads( json_data ):
             params_json = re.split(r";|,", item)
 
-            itemId = yield db.getItemId()
-            messege = Message(itemId)
+            messege = Message()
             messege.username = user
             messege.infobip_id = None
             messege.bulk_name = bulk_name
@@ -114,8 +114,11 @@ class Saver(web.RequestHandler):
             messege.status = 0
 
             messeges.append( messege )
-
+        print('Finish create data to post' + str(time.time()-start))
+        start = time.time()
+        print('Start INSERT ' + str(len(messeges)) + ' row')
         db.setMessages( messeges )
+        print('Finish INSERT ' + str(time.time() - start))
 
 class BaseHandler(tornado.web.RequestHandler):
     @property

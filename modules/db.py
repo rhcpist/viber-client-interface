@@ -2,6 +2,7 @@ import tornado.gen
 import bcrypt
 import momoko
 import psycopg2
+import time
 from modules.message import Message
 import logging
 
@@ -57,13 +58,30 @@ class MomokoDB:
         self.db.execute("CREATE INDEX status ON bulks_wait(status)")
         self.db.execute("CREATE INDEX infobip_id ON bulks_wait(infobip_id)")
         self.db.execute("CREATE SEQUENCE user_id")
-        self.db.execute(
-            '''CREATE TABLE users
-            (id INTEGER PRIMARY KEY DEFAULT NEXTVAL('user_id'),
-            login varchar(120) NOT NULL,
-            pass varchar(512) NOT NULL,
-            name varchar(120) NULL)'''
-        )
+        self.db.execute('''
+            CREATE TABLE users
+                (id INTEGER PRIMARY KEY DEFAULT NEXTVAL('user_id'),
+                login varchar(120) NOT NULL,
+                pass varchar(512) NOT NULL,
+                name varchar(120) NULL)
+        ''')
+        # self.db.execute('''
+        #     CREATE OR REPLACE FUNCTION update_id()
+        #     RETURNS trigger AS
+        #     $BODY$
+        #         BEGIN
+        #             IF (NEW.id IS NULL) THEN
+        #                 NEW.id := nextval('item_id');
+        #                 RETURN NEW;
+        #             END IF;
+        #         END;
+        #     $BODY$
+        #     LANGUAGE plpgsql;
+        # ''')
+        # self.db.execute('''
+        #     CREATE TRIGGER update_id_trigger BEFORE INSERT ON bulks_wait
+	     #    FOR EACH ROW EXECUTE PROCEDURE update_id();
+        # ''')
 
     @tornado.gen.coroutine
     def getCountSend(self):
@@ -101,7 +119,6 @@ class MomokoDB:
                 LIMIT ''' + str(limit) + " OFFSET 0;"
             )
             msgs = self.messageFactory(cursor)
-            #logging.info('getMessagesWaitSend: ')
             return msgs
         except Exception as ex:
             print(ex)
@@ -112,22 +129,27 @@ class MomokoDB:
         try:
             if type(messages) is list:
                 data = []
+                logging.info("Start INSERT " + str(len(messages)) + " messages!")
                 for message in messages:
-                    if message.abon_number:
-                        data.append(message.getList())
-                        placeholders_list_template = ','.join(['%s'] * len(data))
+                    if message.id() is None :
+                        query = yield self.db.mogrify("( nextval('item_id'),%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", message.getList()[1:])
+                    else:
+                        query = yield self.db.mogrify("( %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", message.getList())
+                    data.append(query.decode("utf8"))
+                args_str = ','.join(data)
                 logging.info("Start INSERT " + str(len(data)) + " messages!")
+                start = time.time()
+                print(data[:3])
+                print("Execution start")
+                yield self.db.execute("INSERT INTO bulks_wait VALUES " + args_str + " ON CONFLICT (id) DO UPDATE SET status = EXCLUDED.status, infobip_id = EXCLUDED.infobip_id, infobip_status = EXCLUDED.infobip_status, channel = EXCLUDED.channel")
+                print("Execution End "+ str(time.time() - start ))
+
             else:
-                data = (messages.getList(),)
-                placeholders_list_template = ','.join(['%s'])
-                logging.info("Start INSERT report from Infobip for Message with #ID: " + str(messages.getList()[0]) )
-            print(data)
-            yield self.db.execute(
-                """INSERT INTO bulks_wait (id, infobip_id, username, bulk_name, insert_time, send_time, abon_number, viber_alpha, viber_message, viber_validity_time, viber_photo, viber_btn_text, viber_btn_ancour, sms_alpha, sms_message, sms_validity_time, infobip_status, channel, status )
-                  VALUES
-                      """ + placeholders_list_template + """
-                  ON CONFLICT (id) DO UPDATE SET status = EXCLUDED.status, infobip_id = EXCLUDED.infobip_id, infobip_status = EXCLUDED.infobip_status, channel = EXCLUDED.channel""", data
-            )
+                new_str = messages.getList()
+                logging.info("Start INSERT report from Infobip for Message with #ID: " + str(messages.getList()[0]))
+                print(new_str)
+                yield self.db.execute("INSERT INTO bulks_wait VALUES %s ON CONFLICT (id) DO UPDATE SET status = EXCLUDED.status, infobip_id = EXCLUDED.infobip_id, infobip_status = EXCLUDED.infobip_status, channel = EXCLUDED.channel", (new_str,))
+
         except psycopg2.Error as ex:
             print(ex)
 
@@ -241,7 +263,6 @@ class MomokoDB:
     def messageFactory(self, cursor):
         msgs_lst = []
         for row in cursor.fetchall():
-            #sequence = self.db.execute("select nextval('item_id')")
             id = None
             message = Message(row[0])
             for iField, field in enumerate(cursor.description):
@@ -294,12 +315,4 @@ class MomokoDB:
                 logging.warning('Not correct password for user: ' + str(row[0][1]))
                 return None
         except Exception as ex:
-            print(ex)
-
-    @tornado.gen.coroutine
-    def getItemId(self):
-        try:
-            res = yield self.db.execute("SELECT nextval('item_id')")
-            return res.fetchall()[0][0]
-        except psycopg2.Error as ex:
             print(ex)
