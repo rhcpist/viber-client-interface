@@ -131,11 +131,12 @@ class MomokoDB:
                 data = []
                 logging.info("Start INSERT " + str(len(messages)) + " messages!")
                 for message in messages:
-                    if message.id() is None :
-                        query = yield self.db.mogrify("( nextval('item_id'),%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", message.getList()[1:])
-                    else:
-                        query = yield self.db.mogrify("( %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", message.getList())
-                    data.append(query.decode("utf8"))
+                    if message.abon_number:
+                        if message.id() is None :
+                            query = yield self.db.mogrify("( nextval('item_id'),%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", message.getList()[1:])
+                        else:
+                            query = yield self.db.mogrify("( %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", message.getList())
+                        data.append(query.decode("utf8"))
                 args_str = ','.join(data)
                 logging.info("Start INSERT " + str(len(data)) + " messages!")
                 start = time.time()
@@ -202,7 +203,7 @@ class MomokoDB:
                           WHEN (COUNT(*) FILTER (WHERE status = 3 or status = 4 or status = 5 or status = 6)) != 0 THEN 'complete'
                       END) as state
                     FROM bulks_wait
-                    WHERE user = %s
+                    WHERE username = %s
                     GROUP BY bulk_name, send_time
                     ORDER BY send_time;""", (user,))
             return cursor.fetchall()
