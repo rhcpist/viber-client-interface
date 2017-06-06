@@ -5,14 +5,14 @@ import json
 import tornado.template
 import logging
 import re
+import csv
 
 from modules.db import MomokoDB
 from modules.message import Message, MessageStatus
 from modules.viber_sender import ViberSender
 from tornado import web, ioloop, gen, escape
 
-__UPLOADS__ = "uploads/"
-__BULKS_WAIT__ = "bulks/wait/"
+__DOWNLOADS__ = "downloads/"
 
 logging.basicConfig(format = u'%(levelname)-8s [%(asctime)s] %(message)s', level = logging.DEBUG, filename = u'logs/app.log')
 
@@ -218,7 +218,27 @@ class BulkItem(LoginHandler):
         chart2 = [ bulk[0][17], bulk[0][18] ]
 
         btn_prev = self.request.headers.get('Referer')
-        self.render("omni.html", bulkinfo = statistic, progress = progressbar, viber_info = viberstat, sms_info = smsstat, chart1 = chart1, chart2 = chart2, btn_prev = btn_prev )
+        self.render("omni.html", bulkinfo = statistic, progress = progressbar, viber_info = viberstat, sms_info = smsstat, chart1 = chart1, chart2 = chart2, btn_prev = btn_prev, bulk_name = bulkName, bulk_time = bulkTime )
+
+class Downloads(tornado.web.RequestHandler):
+    @gen.coroutine
+    def get(self):
+        filename = "stats.csv"
+        if os.path.isfile(__DOWNLOADS__ + filename):
+            os.remove(__DOWNLOADS__ + filename)
+        bulkName = self.get_arguments("name")[0]
+        bulkTime = self.get_arguments("time")[0]
+
+        data = yield db.exportCSV(bulkName, bulkTime)
+        with open(__DOWNLOADS__ + filename, "w") as csv_file:
+            writer = csv.writer(csv_file, delimiter=';', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+            for line in data:
+                writer.writerow(line)
+
+        hfile = open(__DOWNLOADS__ + filename, "r")
+        self.set_header('Content-Type', 'application/force-download')
+        self.set_header('Content-Disposition', 'attachment; filename=%s' % filename)
+        self.write(hfile.read())
 
 settings = dict(
     template_path=os.path.join(os.path.dirname(__file__), "templates"),
@@ -234,7 +254,8 @@ if __name__ == "__main__":
         (r"/logout", LogoutHandler),
         (r"/save", Saver),
         (r"/", ShowAll),
-        (r"/omni", BulkItem)
+        (r"/omni", BulkItem),
+        (r"/export", Downloads)
     ], **settings)
 
     application.listen(8889)

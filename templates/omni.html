@@ -1,3 +1,6 @@
+{% import time %}
+{% import datetime %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -113,7 +116,7 @@
 
         <div class="collapse navbar-collapse" id="navbar">
             <ul class="nav navbar-nav navbar-right">
-                <!--<li><a href="#"><i class="fa fa-download"></i> Скачать статистику</a></li>-->
+                <li><a href="{{ 'export?name=' + url_escape(bulk_name) +'&time='+ (str(bulk_time)) }}"><i class="fa fa-download"></i> Скачать статистику</a></li>
                 <li><a href="/create"><i class="fa fa-plus"></i> Создать рассылку</a></li>
                 <li><a href="/"><i class="fa fa-envelope-open-o" aria-hidden="true"></i> Мои рассылки</a></li>
                 <li><a href="/logout"><i class="fa fa-power-off" aria-hidden="true"></i> Выйти</a></li>

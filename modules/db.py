@@ -317,3 +317,12 @@ class MomokoDB:
                 return None
         except Exception as ex:
             print(ex)
+
+    @tornado.gen.coroutine
+    def exportCSV(self, name_bulk, time):
+        try:
+            cursor = yield self.db.execute("SELECT * FROM bulks_wait WHERE bulk_name = %s AND send_time = %s", (name_bulk, time))
+            row = cursor.fetchall()
+            return row
+        except Exception as ex:
+            print(ex)
