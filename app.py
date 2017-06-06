@@ -18,7 +18,7 @@ logging.basicConfig(format = u'%(levelname)-8s [%(asctime)s] %(message)s', level
 
 db = MomokoDB()
 
-sender = ViberSender( "xxx" , "xxx" , db )
+sender = ViberSender( "startmobile" , "A017Bk" , db )
 
 @gen.engine
 def sender_reports():
